@@ -224,15 +224,16 @@ void speed_decision()
 			switch(srd.run_state) 
 			{
 				/*步进电机停止状态*/
-				case STOP:
-						step_count = 0;
-						rest = 0;
+        //在这里判断是否在停止状态，会在每一次运行后多一个脉冲
+				// case STOP:
+				// 		step_count = 0;
+				// 		rest = 0;
 
-						// 关闭通道
-						HAL_TIM_OC_Stop_IT(&TIM_TimeBaseStructure,MOTOR_PUL_CHANNEL_x);
+				// 		// 关闭通道
+				// 		HAL_TIM_OC_Stop_IT(&TIM_TimeBaseStructure,MOTOR_PUL_CHANNEL_x);
 
-						status.running = FALSE;
-						break;
+				// 		status.running = FALSE;
+				// 		break;
 				/*步进电机加速状态*/
 				case ACCEL:
 						TIM_CCxChannelCmd(MOTOR_PUL_TIM, MOTOR_PUL_CHANNEL_x, TIM_CCx_ENABLE);
@@ -286,6 +287,13 @@ void speed_decision()
 						}
 						break;
 			}
+      if(srd.run_state == STOP){
+          step_count = 0;
+          rest = 0;
+          // 关闭通道
+          HAL_TIM_OC_Stop_IT(&TIM_TimeBaseStructure,MOTOR_PUL_CHANNEL_x);
+          status.running = FALSE;
+      }
 			/*求得下一次间隔时间*/
 			srd.step_delay = new_step_delay;
     }
